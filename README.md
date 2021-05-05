@@ -1,6 +1,6 @@
 # EKS-Ansible-CircleCI CI/CD Demo
 
-This is a demonstration of combining CircleCI, Cloudformation, and Ansible to deploy a simple [hello-kubernetes](https://github.com/paulbouwer/hello-kubernetes) (Courtesy of [Paul Bouwer](https://github.com/paulbouwer)) to [Amazon EKS](https://aws.amazon.com/eks/).
+This demonstrates the usage of CircleCI, Cloudformation, and Ansible to deploy a simple [hello-kubernetes](https://github.com/paulbouwer/hello-kubernetes) (Courtesy of [Paul Bouwer](https://github.com/paulbouwer)) to [Amazon EKS](https://aws.amazon.com/eks/).
 
 ## Project Structure (abridged)
 
