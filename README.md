@@ -2,6 +2,12 @@
 
 This demonstrates the usage of CircleCI, Cloudformation, and Ansible to deploy a simple [hello-kubernetes](https://github.com/paulbouwer/hello-kubernetes) (Courtesy of [Paul Bouwer](https://github.com/paulbouwer)) to [Amazon EKS](https://aws.amazon.com/eks/).
 
+## Links
+
+- [Github Repo](https://github.com/CSamuelLents/ansible-eks-circleci)
+- [Running application](http://aa00a411dc0c6433bb8ca4cbcac9a017-547059249.us-east-2.elb.amazonaws.com/)
+- [Docker image](https://hub.docker.com/repository/docker/csamuellents/hello-kubernetes)
+
 ## Project Structure (abridged)
 
 ```text
@@ -26,7 +32,7 @@ This demonstrates the usage of CircleCI, Cloudformation, and Ansible to deploy a
 
 **Tasks Performed:**
 
-1. Linting
+1. Lint Docker & JS
 2. Build & upload Docker image
 3. Deploy (or update) backend infrastructure
 4. Deploy (or update) Kubernetes app

@@ -6,7 +6,8 @@
   "license": "MIT",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "lint": "eslint ."
   },
   "dependencies": {
     "express": "^4.17.1",
@@ -14,5 +15,8 @@
     "express-pino-logger": "^6.0.0",
     "handlebars": "^4.7.7",
     "pino": "^6.11.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.25.0"
   }
 }

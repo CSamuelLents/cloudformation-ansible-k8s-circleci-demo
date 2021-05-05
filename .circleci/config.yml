@@ -9,15 +9,21 @@ orbs:
 jobs:
   lint:
     docker:
-      - image: cimg/base:edge-20.04
+      - image: cimg/node:14.16.1-browsers
     steps:
       - checkout
       - run:
           name: Install Hadolint
           command: make install-hadolint
       - run:
-          name: Run linting
+          name: Run Docker lint
           command: make lint
+      - run:
+          name: Install app dependencies
+          command: npm --prefix ./app install
+      - run:
+          name: Run JS lint
+          command: npm --prefix ./app run lint
 
   upload-docker:
     docker:
