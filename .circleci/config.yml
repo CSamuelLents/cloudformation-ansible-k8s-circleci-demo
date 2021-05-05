@@ -1,0 +1,104 @@
+version: 2.1
+
+defaults: &defaults
+  working_directory: ~/project
+
+orbs:
+  aws: circleci/aws-cli@2.0.0
+
+jobs:
+  lint:
+    docker:
+      - image: cimg/base:edge-20.04
+    steps:
+      - checkout
+      - run:
+          name: Install Hadolint
+          command: make install-hadolint
+      - run:
+          name: Run linting
+          command: make lint
+
+  upload-docker:
+    docker:
+      - image: cimg/base:edge-20.04
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build docker container
+          command: make build-image-linux
+      - run:
+          name: Upload Docker image
+          command: |
+            docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
+            make push-image
+
+  deploy-backend:
+    docker:
+      - image: cimg/base:edge-20.04
+    steps:
+      - checkout
+      - aws/setup:
+          profile-name: default
+      - run:
+          name: Ensure infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --stack-name devops-capstone-${ENVIRONMENT} \
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
+              --template-file .circleci/ansible/files/infrastructure.yml \
+              --region ${AWS_REGION}
+      - run:
+          name: Build Ansible hosts.ini
+          command: |
+            BACKEND_IP=$(aws ec2 describe-instances \
+              --region "${AWS_REGION}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:Name,Values=${ENVIRONMENT}-cluster-mgmt*" \
+              --output text)
+            echo $BACKEND_IP >> ~/project/.circleci/ansible/hosts.ini
+            cat ~/project/.circleci/ansible/hosts.ini
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/hosts.ini
+
+  deploy-app:
+    docker:
+      - image: cimg/python:3.9.2
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - add_ssh_keys:
+          fingerprints: ['b7:02:aa:5b:1c:a0:be:12:11:63:50:c3:15:fc:5e:7b']
+      - run:
+          name: Install dependencies
+          command: pip3 install ansible --user ansible
+      - run:
+          name: Run playbook
+          command: |
+            export ANSIBLE_HOST_KEY_CHECKING=False
+            ansible-playbook -v -i ~/project/.circleci/ansible/hosts.ini ~/project/.circleci/ansible/playbook.yml
+
+workflows:
+  default:
+    jobs:
+      - lint
+      - upload-docker:
+          requires: [lint]
+          filters:
+            branches:
+              only: [main]
+      - deploy-backend:
+          requires: [upload-docker]
+          filters:
+            branches:
+              only: [main]
+      - deploy-app:
+          requires: [deploy-backend]
+          filters:
+            branches:
+              only: [main]

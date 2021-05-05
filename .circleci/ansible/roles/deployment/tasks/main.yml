@@ -1,0 +1,16 @@
+- name: Copy deployment config
+  become: yes
+  copy:
+    src: hello-k8s.yml
+    dest: hello-k8s.yml
+    backup: yes
+
+- name: Apply deployment config
+  become: yes
+  command: /usr/local/bin/kubectl apply -f hello-k8s.yml
+
+- name: Update deployment
+  command: /usr/local/bin/kubectl set image deployments/hello-k8s-deployment hello-kubernetes=csamuellents/hello-kubernetes:1
+
+- name: Check deployment status
+  command: /usr/local/bin/kubectl rollout status deployments/hello-k8s-deployment

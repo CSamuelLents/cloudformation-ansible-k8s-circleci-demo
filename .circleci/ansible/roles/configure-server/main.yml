@@ -1,0 +1,38 @@
+- name: Download AWS CLI
+  get_url:
+    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: /tmp
+
+- name: Unzip AWS CLI
+  unarchive:
+    src: /tmp/awscli-exe-linux-x86_64.zip
+    mode: 0755
+    dest: /tmp/awscli
+    remote_src: true
+
+- name: Install AWS CLI
+  become: true
+  command: /tmp/awscli/aws/install --update
+
+- name: Configure AWS access key ID
+  command: aws configure set aws_access_key_id {{ AWS_ACCESS_KEY_ID|quote }}
+
+- name: Configure AWS secret access key
+  command: aws configure set aws_secret_access_key {{ AWS_SECRET_ACCESS_KEY|quote }}
+
+- name: Configure AWS region
+  command: aws configure set default.region {{ AWS_REGION|quote }}
+
+- name: Download kubectl
+  become: yes
+  get_url:
+    url: https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+    mode: 0755
+    dest: kubectl
+
+- name: Install kubectl
+  become: yes
+  command: install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+- name: Create a kubeconfig file for the cluster
+  command: aws eks update-kubeconfig --region {{ AWS_REGION|quote }} --name {{ ENVIRONMENT|quote }}-cluster
