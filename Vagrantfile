@@ -13,4 +13,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :virtualbox do |v|
     v.memory = 512
   end
+
+  # Ansible provisioner.
+  config.vm.provision :ansible do |ansible|
+    ansible.playbook = "provisioning/playbook.yml"
+  end
 end
