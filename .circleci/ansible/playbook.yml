@@ -18,7 +18,7 @@
     - name: Wait for connection to become reachable
       wait_for_connection:
 
-    - name: Install python for Ansible
+    - name: Ensure Python is installed
       become: true
       raw: test -e /usr/bin/python3 || (yum -y update && yum install -y python3)
       changed_when: false
