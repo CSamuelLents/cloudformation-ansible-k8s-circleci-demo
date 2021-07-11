@@ -241,7 +241,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      KeyName: udacity
+      KeyName: demo-key
       ImageId: ami-05d72852800cbf29e
       NetworkInterfaces:
         - AssociatePublicIpAddress: 'true'

@@ -32,7 +32,7 @@ This demonstrates the usage of CircleCI, Cloudformation, and Ansible to deploy a
 
 **Tasks Performed:**
 
-1. Lint Docker & JS
+1. Lint Dockerfile & JS
 2. Build & upload Docker image
 3. Deploy (or update) backend infrastructure
 4. Deploy (or update) Kubernetes app
