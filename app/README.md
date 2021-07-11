@@ -1,6 +1,6 @@
 # Hello Kubernetes demo app
 
-A demo app that can be deployed to a Kubernetes cluster. It displays a message, and also namespace, pod, node and image details.
+A demo app that can be deployed to a Kubernetes cluster. It displays a message, the namespace, pod, node, and image details.
 
 ## Paths
 
